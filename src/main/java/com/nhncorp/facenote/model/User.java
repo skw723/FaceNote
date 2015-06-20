@@ -14,6 +14,7 @@ import java.util.List;
  */
 public class User {
 	public static final int FRIENDS_COUNT_LIMIT = 10000;
+	public static final String NEW_LINE = "\r\n";
 	String userId;
 	List<String> friends;
 

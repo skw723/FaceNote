@@ -9,26 +9,27 @@ package com.nhncorp.facenote.model;
 
 import java.util.Date;
 
+import com.nhncorp.facenote.PostType;
+
 /**
  * @author 서상우
  */
-public class Post {
+public abstract class Post {
 	public static String FIELD_SEPERATOR = "::";
 	public static final String NEW_LINE = "\r\n";
+	private PostType type;
 	private Date createTime;
-	private User writer;
-	private String receiverId;
+	private String writer;
 	private String content;
 	
 	public Post(){
-		
 	}
 	
-	public Post(Date createTime, User writer, String receiverId, String content) {
+	public Post(PostType type, Date createTime, String writer, String content) {
 		super();
+		this.type = type;
 		this.createTime = createTime;
 		this.writer = writer;
-		this.receiverId = receiverId;
 		this.content = content;
 	}
 
@@ -49,23 +50,32 @@ public class Post {
 	}
 
 	public String getWriterId() {
-		return writer.getUserId();
-	}
-
-	public void setWriter(User writer) {
-		this.writer = writer;
-	}
-
-	public User getWriter() {
 		return writer;
 	}
 
-	public String getReceiverId() {
-		return receiverId;
+	public void setWriter(String writer) {
+		this.writer = writer;
 	}
 
-	public void setReceiverId(String receiverId) {
-		this.receiverId = receiverId;
+	public String getWriter() {
+		return writer;
 	}
 
+	public PostType getType() {
+		return type;
+	}
+
+	public void setType(PostType type) {
+		this.type = type;
+	}
+
+	@Override
+	public String toString() {
+		String returnString = getType() + FIELD_SEPERATOR 
+				+ getCreateTime().getTime() + FIELD_SEPERATOR
+				+ getWriterId() + FIELD_SEPERATOR
+				+ getContent() + FIELD_SEPERATOR;
+		
+		return returnString;
+	}
 }

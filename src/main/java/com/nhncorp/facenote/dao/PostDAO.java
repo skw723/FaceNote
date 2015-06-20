@@ -1,12 +1,16 @@
 package com.nhncorp.facenote.dao;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nhncorp.facenote.model.Post;
 
 public interface PostDAO {
-	public boolean writeNormalUserPost(List<String> friends, Post post);
-	public boolean writeHeavyUserPost(Post post);
-	public List<Post> getNormalTimelineList(String userId);
-	public List<Post> getHeavyTimelineList(String userId);
+	public void writePost(Post post) throws IOException;
+	public List<String> getPostList() throws IOException;
+	public void saveFile(MultipartFile file) throws IOException;
+	public File getImageFile(String fileName) throws IOException;
 }

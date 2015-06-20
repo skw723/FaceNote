@@ -2,22 +2,18 @@ package com.nhncorp.facenote.model;
 
 import java.util.Date;
 
+import com.nhncorp.facenote.PostType;
+
 public class TextTypePost extends Post {
 	public TextTypePost(){
-		super();
+		super.setType(PostType.TEXT);
 	}
 	public TextTypePost(String[] params) {
-		super(new Date(Long.parseLong(params[1])), new User(params[2]), params[3], params[4]);
+		super(PostType.TEXT, new Date(Long.parseLong(params[1])), params[2], params[3]);
 	}
 
 	@Override
 	public String toString() {
-		String returnString = getClass().getName() + FIELD_SEPERATOR 
-				+ getCreateTime().getTime() + FIELD_SEPERATOR
-				+ getWriterId() + FIELD_SEPERATOR
-				+ getReceiverId() + FIELD_SEPERATOR
-				+ getContent();
-		
-		return returnString;
+		return super.toString();
 	}
 }

@@ -2,16 +2,18 @@ package com.nhncorp.facenote.model;
 
 import java.util.Date;
 
+import com.nhncorp.facenote.PostType;
+
 public class ImageTypePost extends Post {
 	String imageUrl;
 	
 	public ImageTypePost() {
-		
+		super.setType(PostType.IMAGE);
 	}
 	
 	public ImageTypePost(String[] params) {
-		super(new Date(Long.parseLong(params[1])), new User(params[2]), params[3], params[4]);
-		this.imageUrl = params[5];
+		super(PostType.IMAGE, new Date(Long.parseLong(params[1])), params[2], params[3]);
+		this.imageUrl = params[4];
 	}
 
 	public String getImageUrl() {
@@ -24,11 +26,7 @@ public class ImageTypePost extends Post {
 
 	@Override
 	public String toString() {
-		String returnString = getClass().getName() + FIELD_SEPERATOR 
-				+ getCreateTime().getTime() + FIELD_SEPERATOR
-				+ getWriterId() + FIELD_SEPERATOR
-				+ getReceiverId() + FIELD_SEPERATOR
-				+ getContent() + FIELD_SEPERATOR
+		String returnString = super.toString()
 				+ getImageUrl();
 		
 		return returnString;

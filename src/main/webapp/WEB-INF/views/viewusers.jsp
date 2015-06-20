@@ -5,25 +5,25 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>UserList</title>
 </head>
 <body>
+조회 결과 : ${result}
 <table border="1">
 	<tr>
-		<th>시간</th>
-		<th>작성자</th>
-		<th>내용</th>
+		<th>사용자</th>
+		<th>친구목록</th>
 	</tr>
-	<c:forEach var="post" items="${posts}">
+	<c:forEach var="user" items="${users}">
 	<tr>
-		<td>${post.createTime}</td>
-		<td>${post.writer.userId}</td>
-		<td>${post.content}</td>
+		<td>${user.userId}</td>
+		<td>
+			<c:forEach var="friend" items="${user.friends}">
+				${friend}
+			</c:forEach>
+		</td>
 	</tr>
 	</c:forEach>
-	<tr>
-		<td></td>
-	</tr>
 </table>
 </body>
 </html>
