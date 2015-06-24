@@ -17,7 +17,6 @@
 		<th>시간</th>
 		<th>작성자</th>
 		<th>내용</th>
-		<th>타입</th>
 		<th>이미지</th>
 	</tr>
 	<c:forEach var="post" items="${posts}">
@@ -25,11 +24,8 @@
 		<td>${post.createTime}</td>
 		<td>${post.writer}</td>
 		<td>${post.content}</td>
-		<td>${post.type.typeStr}</td>
 		<td>
-		<c:if test="${post.type == 'IMAGE'}">
-			<img src="${post.imageUrl}" width="320" height="auto"/>
-		</c:if>
+			<img src="${post.imageName}" width="320" height="auto"/>
 		</td>
 	</tr>
 	</c:forEach>

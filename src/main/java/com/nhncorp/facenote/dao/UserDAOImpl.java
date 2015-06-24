@@ -33,6 +33,7 @@ public class UserDAOImpl implements UserDAO {
 			return userList;
 		}
 		userList = FileUtils.readLines(userFile);
+		//FileUtils.forceMkdir(null);
 
 		return userList;
 	}

@@ -3,6 +3,8 @@ package com.nhncorp.facenote.model;
 
 public class Friendship {
 	public static final String separator = "::";
+	public static final int USER1_POS = 0;
+	public static final int USER2_POS = 1;
 	private String user1;
 	private String user2;
 	

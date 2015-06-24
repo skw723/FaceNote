@@ -9,28 +9,29 @@ package com.nhncorp.facenote.model;
 
 import java.util.Date;
 
-import com.nhncorp.facenote.PostType;
-
 /**
  * @author 서상우
  */
-public abstract class Post {
+public class Post {
 	public static String FIELD_SEPERATOR = "::";
 	public static final String NEW_LINE = "\r\n";
-	private PostType type;
+	public static final int CREATE_TIME_POS = 0;
+	public static final int WRITER_POS = 1;
+	public static final int CONTENT_POS = 2;
+	public static final int IMAGE_URL_POS = 3;
 	private Date createTime;
 	private String writer;
 	private String content;
+	private String imageName;
 	
 	public Post(){
 	}
 	
-	public Post(PostType type, Date createTime, String writer, String content) {
-		super();
-		this.type = type;
-		this.createTime = createTime;
-		this.writer = writer;
-		this.content = content;
+	public Post(String[] params) throws NumberFormatException {
+		this.createTime = new Date(Long.parseLong(params[0]));
+		this.writer = params[1];
+		this.content = params[2];
+		this.imageName = params[3];
 	}
 
 	public String getContent() {
@@ -61,20 +62,21 @@ public abstract class Post {
 		return writer;
 	}
 
-	public PostType getType() {
-		return type;
+	public String getImageName() {
+		return imageName;
 	}
 
-	public void setType(PostType type) {
-		this.type = type;
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
 	}
 
 	@Override
 	public String toString() {
-		String returnString = getType() + FIELD_SEPERATOR 
-				+ getCreateTime().getTime() + FIELD_SEPERATOR
-				+ getWriterId() + FIELD_SEPERATOR
-				+ getContent() + FIELD_SEPERATOR;
+		String returnString = 
+				getCreateTime().getTime() + FIELD_SEPERATOR + 
+				getWriterId() + FIELD_SEPERATOR + 
+				getContent() + FIELD_SEPERATOR +
+				getImageName() + FIELD_SEPERATOR;
 		
 		return returnString;
 	}

@@ -8,6 +8,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.transaction.file.FileResourceManager;
+import org.apache.commons.transaction.file.ResourceManagerException;
+import org.apache.commons.transaction.file.ResourceManagerSystemException;
+import org.apache.commons.transaction.util.Log4jLogger;
+import org.apache.commons.transaction.util.LoggerFacade;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,11 +54,11 @@ public class PostBOImpl implements PostBO {
 		int failCount = 0;
 
 		for(String postStr : postStrList) {
-			String[] split = postStr.split(Post.FIELD_SEPERATOR);
-			String writer = split[2];
+			String[] params = PostFactory.createPrams(postStr);
+			String writer = params[Post.WRITER_POS];
 
 			if(writer.equals(userId) || friends.contains(writer)) {
-				Post post = PostFactory.createPost(split);
+				Post post = PostFactory.createPost(params);
 				if(post == null) {
 					failCount++;
 					continue;
@@ -62,9 +67,8 @@ public class PostBOImpl implements PostBO {
 			}
 		}
 		
-		//TODO 실패한 것들은 어떻게???
 		logger.info(String.format("=== createPost fail count : %d ===", failCount));
-		
+		//TODO 모두 실패한 경우만 fail처리...
 		if(postStrList.size() == failCount) {
 			return null;
 		}
@@ -84,12 +88,52 @@ public class PostBOImpl implements PostBO {
 		if(post == null) {
 			return false;
 		}
-		//TODO Post 등록과 첨부파일 저장 트랜잭션 처리...??
+		
 		postDAO.writePost(post);
 		
 		if(!file.isEmpty()) {
 			postDAO.saveFile(file);
 		}
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//TODO Post 등록과 파일저장 트랜잭션 처리...
+		/*LoggerFacade loggerFaced = null;
+		FileResourceManager frm = null;
+		String txId = null;
+		if(!file.isEmpty()) {
+			loggerFaced = new Log4jLogger(logger);
+			frm = new FileResourceManager("C:\\tmp", "C:\\tmp\\work", false, loggerFaced);
+			try {
+				frm.start();
+				txId = frm.generatedUniqueTxId();
+				frm.startTransaction(txId);
+			} catch (Exception e) {
+				return false;
+			}
+			try {
+				postDAO.writePost2(post, frm, txId);
+				postDAO.saveFile(file);
+			} catch (Exception e) {
+				try {
+					frm.rollbackTransaction(txId);
+					//TODO : 저장하다 만 파일이 있다면 삭제하는 로직 추가
+					return false;
+				} catch (ResourceManagerException e1) {
+					return false;
+				}
+			}
+			try {
+				frm.commitTransaction(txId);
+				return true;
+			} catch (ResourceManagerException e) {
+				try {
+					frm.rollbackTransaction(txId);
+					return false;
+				} catch (ResourceManagerException e1) {
+					return false;
+				}
+			}
+		}*/
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		return true;
 	}
 

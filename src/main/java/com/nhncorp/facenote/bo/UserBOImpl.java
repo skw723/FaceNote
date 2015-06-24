@@ -56,7 +56,7 @@ public class UserBOImpl implements UserBO {
 		}
 		
 		if(isExistFriend(userId, friendId)) {
-			//TODO 이미 등록된 친구의 경우 현재는 성공으로 처리
+			//TODO 이미 등록된 경우는 true리턴
 			return true;
 		}
 		
@@ -83,10 +83,10 @@ public class UserBOImpl implements UserBO {
 		
 		for(String str : friendStrList) {
 			String[] split =  str.split(Friendship.separator);
-			if(split[0].equals(userId)) {
-				friends.add(split[1]);
-			} else if(split[1].equals(userId)) {
-				friends.add(split[0]);
+			if(split[Friendship.USER1_POS].equals(userId)) {
+				friends.add(split[Friendship.USER2_POS]);
+			} else if(split[Friendship.USER2_POS].equals(userId)) {
+				friends.add(split[Friendship.USER1_POS]);
 			}
 		}
 		
