@@ -12,7 +12,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
-		String referer = request.getHeader("Referer");
+		/*String referer = request.getHeader("Referer");
 		String url = request.getRequestURI();
 		
 		if(StringUtils.startsWith(url, excludePath)) {
@@ -21,7 +21,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 		if(referer == null) {
 			response.sendRedirect("/");
 			return false;
-		}
+		}*/
 		return super.preHandle(request, response, handler);
 	}
 }

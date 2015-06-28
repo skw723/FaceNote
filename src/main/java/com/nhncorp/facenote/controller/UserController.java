@@ -6,7 +6,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +18,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nhncorp.facenote.bo.UserBO;
 import com.nhncorp.facenote.model.User;
+import com.nhncorp.facenote.mybatistest.Model;
 
 @Controller
 public class UserController {
 	@Autowired
 	private UserBO userBO;
+	@Autowired
+	SqlSessionFactoryBean session;
 
 	private static final Logger logger = Logger.getLogger(UserController.class);
 
@@ -116,5 +121,19 @@ public class UserController {
 		}
 		
 		return "Success";
+	}
+	
+	@RequestMapping(value="my")
+	@ResponseBody
+	public String my() {
+		try {
+			SqlSession s = session.getObject().openSession();
+			List<Model> list = s.selectList("TEST.get");
+			System.out.println();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "s";
 	}
 }

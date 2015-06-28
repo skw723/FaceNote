@@ -12,7 +12,7 @@ public class Client {
 	
 	static {
 		try {
-			Reader reader = Resources.getResourceAsReader("SqlMapConfig.xml");
+			Reader reader = Resources.getResourceAsReader("classpath:mybatis-config.xml");
 			sqlMapper = new SqlSessionFactoryBuilder().build(reader);
 		} catch (IOException e) {
 			e.printStackTrace();
