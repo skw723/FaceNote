@@ -6,9 +6,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
-import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +24,7 @@ public class UserController {
 	@Autowired
 	private UserBO userBO;
 	@Autowired
-	SqlSessionFactoryBean session;
+	SqlSessionTemplate session;
 
 	private static final Logger logger = Logger.getLogger(UserController.class);
 
@@ -127,8 +126,8 @@ public class UserController {
 	@ResponseBody
 	public String my() {
 		try {
-			SqlSession s = session.getObject().openSession();
-			List<TestModel> list = s.selectList("TEST.get");
+			//SqlSession s = session.getObject().openSession();
+			List<TestModel> list = session.selectList("TEST.get");
 			return list.get(0).toString();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
