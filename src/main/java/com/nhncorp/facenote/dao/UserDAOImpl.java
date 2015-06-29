@@ -29,11 +29,7 @@ public class UserDAOImpl implements UserDAO {
 		List<String> userList = new ArrayList<String>();
 
 		File userFile = new File(userFilePath + File.separator + userFileName);
-		if(CustomFileUtils.createFile(userFile)) {
-			return userList;
-		}
 		userList = FileUtils.readLines(userFile);
-		//FileUtils.forceMkdir(null);
 
 		return userList;
 	}
@@ -41,22 +37,12 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public void addUesr(String userId) throws IOException {
 		File userFile = new File(userFilePath + File.separator + userFileName);
-
-		if(CustomFileUtils.createFile(userFile)) {
-
-		}
-
 		FileUtils.write(userFile, userId + User.NEW_LINE, true);
 	}
 
 	@Override
 	public void addFriend(String userId, String friendId) throws IOException {
 		File userFile = new File(friendFilePath + File.separator + friendFileName);
-
-		if(CustomFileUtils.createFile(userFile)) {
-
-		}
-
 		FileUtils.write(userFile, userId + Friendship.separator + friendId + User.NEW_LINE, true);
 	}
 
@@ -65,9 +51,6 @@ public class UserDAOImpl implements UserDAO {
 		List<String> friendList = new ArrayList<String>();
 
 		File friendFile = new File(friendFilePath + File.separator + friendFileName);
-		if(CustomFileUtils.createFile(friendFile)) {
-			return friendList;
-		}
 		friendList = FileUtils.readLines(friendFile);
 
 		return friendList;

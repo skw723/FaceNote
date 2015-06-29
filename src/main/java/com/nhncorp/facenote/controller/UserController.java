@@ -18,7 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nhncorp.facenote.bo.UserBO;
 import com.nhncorp.facenote.model.User;
-import com.nhncorp.facenote.mybatistest.Model;
+import com.nhncorp.facenote.mybatis.TestModel;
 
 @Controller
 public class UserController {
@@ -123,17 +123,17 @@ public class UserController {
 		return "Success";
 	}
 	
-	@RequestMapping(value="my")
+	@RequestMapping(value="mybatis")
 	@ResponseBody
 	public String my() {
 		try {
 			SqlSession s = session.getObject().openSession();
-			List<Model> list = s.selectList("TEST.get");
-			System.out.println();
+			List<TestModel> list = s.selectList("TEST.get");
+			return list.get(0).toString();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "s";
+		return "fail";
 	}
 }

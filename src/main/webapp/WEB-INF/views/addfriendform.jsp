@@ -7,7 +7,7 @@
 <title>Add Friend</title>
 </head>
 <body>
-<form action="addfriend" method="post">
+<form action="addfriend.nhn" method="post">
 사용자1 : <input type="text" name="user" /><br>
 사용자2 : <input type="text" name="friend" />
 <input type="submit" value="등록" />

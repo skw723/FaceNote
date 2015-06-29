@@ -30,6 +30,13 @@ public class PostController {
 	
 	private static final Logger logger = Logger.getLogger(PostController.class);
 	
+	@RequestMapping(value="index")
+	public ModelAndView main() {
+		ModelAndView mav = new ModelAndView("index");
+		
+		return mav;
+	}
+	
 	@RequestMapping(value="writepostform")
 	public ModelAndView writePostForm() {
 		ModelAndView mav = new ModelAndView("writepostform");

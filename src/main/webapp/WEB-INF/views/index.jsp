@@ -8,10 +8,10 @@
 </head>
 <body>
 <ul>
-	<li><a href="/viewusers">사용자 목록</a></li>
-	<li><a href="/adduserform">사용자 추가</a></li>
-	<li><a href="/addfriendform">친구 추가</a></li>
-	<li><a href="/writepostform">포스트 작성</a></li>
+	<li><a href="/viewusers.nhn">사용자 목록</a></li>
+	<li><a href="/adduserform.nhn">사용자 추가</a></li>
+	<li><a href="/addfriendform.nhn">친구 추가</a></li>
+	<li><a href="/writepostform.nhn">포스트 작성</a></li>
 </ul>
 </body>
 </html>

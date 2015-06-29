@@ -12,7 +12,7 @@ import com.nhncorp.facenote.model.Post;
 
 public interface PostDAO {
 	public void writePost(Post post) throws IOException;
-	public void writePost2(Post post, FileResourceManager frm, Object txId) throws IOException, ResourceManagerException;
+	//public void writePost2(Post post, FileResourceManager frm, Object txId) throws IOException, ResourceManagerException;
 	public List<String> getPostList() throws IOException;
 	public void saveFile(MultipartFile file) throws IOException;
 	public File getImageFile(String fileName) throws IOException;

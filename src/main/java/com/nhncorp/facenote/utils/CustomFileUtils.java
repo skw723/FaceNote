@@ -3,10 +3,14 @@ package com.nhncorp.facenote.utils;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
+
 public class CustomFileUtils {
-	public static boolean createFile(File file) throws IOException  {
-		File dir = file.getParentFile();
-		if(!dir.exists()) {
+	public static boolean createDirectory(File directory) throws IOException  {
+		if(directory.exists()) {
+			return false;
+		}
+		/*if(!dir.exists()) {
 			dir.mkdirs();
 		}
 		
@@ -14,6 +18,8 @@ public class CustomFileUtils {
 			file.createNewFile();		
 			return true;
 		}
-		return false;
+		return false;*/
+		FileUtils.forceMkdir(directory);
+		return true;
 	}
 }

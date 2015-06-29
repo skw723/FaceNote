@@ -25,7 +25,7 @@
 		<td>${post.writer}</td>
 		<td>${post.content}</td>
 		<td>
-			<img src="${post.imageName}" width="320" height="auto"/>
+			<img src="/image/${post.imageName}" width="320" height="auto"/>
 		</td>
 	</tr>
 	</c:forEach>

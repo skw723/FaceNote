@@ -19,7 +19,7 @@
 </script>
 </head>
 <body>
-<form action="writepost" method="post" enctype="multipart/form-data">
+<form action="writepost.nhn" method="post" enctype="multipart/form-data">
 사용자 : <input type="text" name="user" /><br>
 내용 : <input type="text" name="content" /><br>
 이미지 : <input type="file" name="image" accept="image/*" onchange="readURL(this);"/><br>

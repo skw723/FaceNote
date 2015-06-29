@@ -156,14 +156,11 @@
 			<artifactId>cubrid-jdbc-driver-8.4.4.0227</artifactId>
 			<version>1.0</version>
 		</dependency>
-
-		<!-- mybatis -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.mybatis</groupId>
 			<artifactId>mybatis</artifactId>
