@@ -1,14 +1,20 @@
 package com.nhncorp.facenote.bo;
 
-import java.io.IOException;
 import java.util.List;
 
-import com.nhncorp.facenote.model.User;
+import javax.servlet.http.HttpSession;
+
+import com.nhncorp.facenote.model.FriendModel;
+import com.nhncorp.facenote.model.UserModel;
 
 public interface UserBO {
-	public List<User> getUserList() throws IOException;
-	public boolean addUser(String userId) throws IOException;
-	public boolean addFriend(String userId, String friendId) throws IOException;
-	public List<String> getFriendList(String userId) throws IOException;
-	public boolean isExistUser(String userId) throws IOException;
+	public UserModel getUserInfo(String user_id);
+	//public boolean addUser(String userId) throws IOException;
+	public boolean addFriend(FriendModel frndModel);
+	public List<FriendModel> getFriendList(String userId);
+	public List<FriendModel> getNotAccpList(String userId);
+	public boolean isLogin(UserModel userModel);
+	public boolean isLoginState(HttpSession session);
+	public boolean isExistUser(String userId);
+	public boolean accpFrnd(FriendModel frndModel);
 }

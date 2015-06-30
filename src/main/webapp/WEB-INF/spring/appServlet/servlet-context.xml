@@ -34,6 +34,9 @@
 		<beans:property name="defaultEncoding">
 			<beans:value>UTF-8</beans:value>
 		</beans:property>
+		 <beans:property name="maxUploadSize">
+            <beans:value>5242880</beans:value>
+        </beans:property>
 	</beans:bean>
 
 	<!-- interceptor -->
@@ -71,7 +74,7 @@
 		<beans:property name="configLocation" value="classpath:/mybatis-config.xml" />
 		<!-- mapper 의 위치를 설정한다. -->
 		<beans:property name="mapperLocations"
-			value="classpath:sqlMapper/common.xml" />
+			value="classpath:sqlMapper/*.xml" />
 		<!-- statement 선언의 오류를 좀 더 빠르게 파악하기 위해서 true로 설정 -->
 		<beans:property name="failFast" value="true" />
 	</beans:bean>

@@ -1,17 +1,16 @@
 package com.nhncorp.facenote.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.nhncorp.facenote.bo.PostBO;
 import com.nhncorp.facenote.bo.UserBO;
-import com.nhncorp.facenote.model.Post;
+import com.nhncorp.facenote.model.PostModel;
 
 @Controller
 public class PostController {
@@ -30,13 +29,6 @@ public class PostController {
 	
 	private static final Logger logger = Logger.getLogger(PostController.class);
 	
-	@RequestMapping(value="index")
-	public ModelAndView main() {
-		ModelAndView mav = new ModelAndView("index");
-		
-		return mav;
-	}
-	
 	@RequestMapping(value="writepostform")
 	public ModelAndView writePostForm() {
 		ModelAndView mav = new ModelAndView("writepostform");
@@ -44,65 +36,35 @@ public class PostController {
 		return mav;
 	}
 	
+	@RequestMapping(value="post")
+	public ModelAndView post(HttpSession session) {
+		ModelAndView mav = new ModelAndView("post");
+		String user_id = (String) session.getAttribute("user");
+		
+		List<PostModel> posts = postBO.getPostList(user_id);
+		mav.addObject("posts", posts);
+		
+		return mav;
+	}
 	
-	@RequestMapping(value="/writepost", method=RequestMethod.POST)
+	@RequestMapping(value="addpost")
 	@ResponseBody
-	public String writePost(@RequestParam(value="user") String userId,
-			@RequestParam(value="content", defaultValue="")String content,
-			@RequestParam(value="image")MultipartFile file) {
-		if(StringUtils.isEmpty(userId)) {
-			logger.info("=== writePost -> userId is empty ===");
-			return "userId is empty";
+	public String addFriend(@ModelAttribute PostModel postModel, HttpSession session, MultipartFile image) {
+		String user = (String) session.getAttribute("user");
+		postModel.setUser_id(user);
+		
+		boolean isSuccess = postBO.addPost(postModel, image);
+		
+		if(isSuccess == true) {
+			return "success";
 		}
 		
-		boolean isSuccess = false;
-		try {
-			isSuccess = postBO.writePost(userId, content, file);
-		} catch (IOException e) {
-			logger.info("=== writePost -> IOException ===");
-			logger.info(e.getMessage());
-			return "Fail";
-		}
-			
-		if(isSuccess) {
-			return "Success";
-		} else {
-			logger.info("=== writePost -> could not find userId ===");
-			return "could not find userId";
-		}
+		return "fail";
 	}
 	
 	@RequestMapping(value="/viewpost")
 	public ModelAndView viewPost(@RequestParam(value="user") String userId) {
-		ModelAndView mav = new ModelAndView("viewpost");
-		
-		if(StringUtils.isEmpty(userId)) {
-			logger.info("=== viewPost -> userId is empty ===");
-			mav.addObject("result", "Fail");
-			return mav;
-		}
-		
-		List<Post> postList = new ArrayList<Post>();
-		
-		try {
-			postList = postBO.getPostList(userId);
-		} catch (IOException e) {
-			logger.info("=== viewPost -> IOException ===");
-			logger.info(e.getMessage());
-			mav.addObject("result", "Fail");
-			return mav;
-		}
-		
-		if(postList == null) {
-			mav.addObject("result", "Fail");
-			return mav;
-		}
-		
-		mav.addObject("result", "Success");
-		mav.addObject("user", userId);
-		mav.addObject("posts", postList);
-		
-		return mav;
+		return null;
 	}
 	
 	@RequestMapping(value="/*.jpg")
@@ -115,5 +77,16 @@ public class PostController {
 			logger.info(e.getMessage());
 			return null;
 		}
+	}
+	
+	@RequestMapping(value="modifypost")
+	@ResponseBody
+	public String modifyPost(@ModelAttribute PostModel postModel) {
+		boolean isSuccess = postBO.modifyPost(postModel);
+		
+		if(isSuccess) { 
+			return "success";
+		}
+		return "fail";
 	}
 }

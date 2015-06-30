@@ -8,22 +8,21 @@
 <title>UserList</title>
 </head>
 <body>
-조회 결과 : ${result}
 <table border="1">
 	<tr>
-		<th>사용자</th>
-		<th>친구목록</th>
+		<th>아이디</th>
+		<th>이름</th>
+		<th>생년월일</th>
+		<th>이메일</th>
+		<th>가입일</th>
 	</tr>
-	<c:forEach var="user" items="${users}">
 	<tr>
-		<td>${user.userId}</td>
-		<td>
-			<c:forEach var="friend" items="${user.friends}">
-				${friend}
-			</c:forEach>
-		</td>
+		<td>${user.user_id}</td>
+		<td>${user.user_nm}</td>
+		<td>${user.bymd}</td>
+		<td>${user.email_addr}</td>
+		<td>${user.join_ymd}</td>
 	</tr>
-	</c:forEach>
 </table>
 </body>
 </html>

@@ -2,15 +2,16 @@ package com.nhncorp.facenote.dao;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.nhncorp.facenote.model.Post;
+import com.nhncorp.facenote.model.AtchFileModel;
+import com.nhncorp.facenote.model.PostModel;
 
 @Repository
 public class PostDAOImpl implements PostDAO {
@@ -20,21 +21,19 @@ public class PostDAOImpl implements PostDAO {
 	private String postFilePath;
 	@Value("#{common['image.filepath']}")
 	private String imageFilePath;
+	
+	@Autowired
+	SqlSessionTemplate session;
 
 	@Override
-	public void writePost(Post post) throws IOException {
-		File postFile = new File(postFilePath + File.separator + postFileName);
-		FileUtils.write(postFile, post.toString() + Post.NEW_LINE, true);
+	public void writePost(PostModel post) throws IOException {
+//		File postFile = new File(postFilePath + File.separator + postFileName);
+//		FileUtils.write(postFile, post.toString() + PostModel.NEW_LINE, true);
 	}
 
 	@Override
-	public List<String> getPostList() throws IOException {
-		List<String> postList = new ArrayList<String>();
-
-		File postFile = new File(postFilePath + File.separator + postFileName);
-		postList = FileUtils.readLines(postFile);
-
-		return postList;
+	public List<PostModel> getPostList(String user_id) {
+		return session.selectList("post.getPostList", user_id);
 	}
 
 	@Override
@@ -48,6 +47,21 @@ public class PostDAOImpl implements PostDAO {
 	public File getImageFile(String fileName) throws IOException {
 		File imageFile = new File(imageFilePath + File.separator + fileName);
 		return imageFile;
+	}
+
+	@Override
+	public int addPost(PostModel postModel) {
+		return session.insert("post.addPost", postModel);
+	}
+
+	@Override
+	public int addAtchFile(AtchFileModel fileModel) {
+		return session.insert("post.addAtchFile", fileModel); 
+	}
+
+	@Override
+	public int modifyPost(PostModel postModel) {
+		return session.update("post.modifyPost", postModel);
 	}
 
 	/*@Override

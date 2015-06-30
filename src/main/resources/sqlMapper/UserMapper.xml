@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="user">
+     <select id="isExistUser" parameterType="com.nhncorp.facenote.model.UserModel" resultType="int">
+         /* user.isExistUser */
+         SELECT COUNT(*)
+         FROM	[USER]
+         WHERE	USER_ID = #{user_id} 
+         		AND
+         		USE_YN = 'Y';
+     </select>
+     
+     <select id="isExistFrnd" parameterType="com.nhncorp.facenote.model.FriendModel" resultType="int">
+         /* user.isExistFrnd */
+		SELECT
+			COUNT(*)
+		FROM
+			user_frnd_mg
+		WHERE
+			(
+				USER_ID = #{user_id}
+				AND FRND_ID = #{frnd_id}
+			)
+			OR (
+				USER_ID = #{frnd_id}
+				AND FRND_ID = #{user_id}
+			)
+			AND USE_YN = 'Y';
+     </select>
+     
+      <select id="isLogin" parameterType="com.nhncorp.facenote.model.UserModel" resultType="int">
+         /* user.isExistUser */
+         SELECT COUNT(*)
+         FROM	[USER]
+         WHERE	USER_ID = #{user_id} 
+         		AND
+         		PASSWORD = #{password}
+         		AND
+         		USE_YN = 'Y';
+     </select>
+     
+     <select id="getUserInfo" parameterType="com.nhncorp.facenote.model.UserModel" resultType="com.nhncorp.facenote.model.UserModel">
+         /* user.getUserInfo */
+         SELECT USER_ID,
+         		USER_NM,
+         		BYMD,
+         		EMAIL_ADDR,
+         		JOIN_YMD
+         FROM	[USER]
+         WHERE	USER_ID = #{user_id}
+         		AND
+         		USE_YN = 'Y';
+     </select>
+     
+     <select id="getFriendList" parameterType="java.lang.String" resultType="com.nhncorp.facenote.model.FriendModel">
+         /* user.getFriendList */
+         SELECT USER_ID,
+         		FRND_ID,
+         		ACCP_YN,
+         		APLY_YMD,
+         		ACCP_YMD
+           FROM	USER_FRND_MG
+          WHERE	USER_ID = #{user_id}
+         		AND
+         		ACCP_YN = 'Y'
+         		AND
+         		USE_YN = 'Y'
+          UNION ALL 
+         SELECT USER_ID,
+         		FRND_ID,
+         		ACCP_YN,
+         		APLY_YMD,
+         		ACCP_YMD
+           FROM	USER_FRND_MG
+          WHERE	FRND_ID = #{user_id}
+         		AND
+         		ACCP_YN = 'Y'
+         		AND
+         		USE_YN = 'Y'
+     </select>
+     
+     <select id="getNotAccpList" parameterType="java.lang.String" resultType="com.nhncorp.facenote.model.FriendModel">
+         /* user.getNotAccpList */
+			SELECT
+				USER_ID,
+				FRND_ID,
+				ACCP_YN,
+				APLY_YMD,
+				ACCP_YMD
+			FROM
+				USER_FRND_MG
+			WHERE
+				USER_ID = 'skw723'
+				AND ACCP_YN = 'N'
+				AND USE_YN = 'Y'
+			UNION ALL
+			SELECT
+				USER_ID,
+				FRND_ID,
+				ACCP_YN,
+				APLY_YMD,
+				ACCP_YMD
+			FROM
+				USER_FRND_MG
+			WHERE
+				FRND_ID = 'skw723'
+				AND ACCP_YN = 'N'
+				AND USE_YN = 'Y';
+     </select>
+     
+     <insert id="addFriend" parameterType="com.nhncorp.facenote.model.FriendModel">
+         /* user.addFriend */
+         INSERT INTO 
+   USER_FRND_MG (
+   				USER_ID,
+				FRND_ID,
+				APLY_YMD
+				)
+		 VALUES (
+				#{user_id},
+				#{frnd_id},
+				#{aply_ymd}
+				)
+		     ON DUPLICATE KEY 
+		 UPDATE USE_YN = 'Y',
+		 		APLY_YMD = #{aply_ymd};
+     </insert>
+     
+     <update id="accpFrnd" parameterType="com.nhncorp.facenote.model.FriendModel">
+     	 /* user.accpFrnd */
+         UPDATE USER_FRND_MG
+            SET ACCP_YN = 'Y'
+          WHERE USER_ID = #{user_id}
+          		AND
+          		FRND_ID = #{frnd_id}
+     </update>
+ </mapper>

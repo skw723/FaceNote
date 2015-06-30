@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="post">
+     <select id="getPostList" parameterType="java.lang.String" resultType="com.nhncorp.facenote.model.PostModel">
+         /* post.getPostList */
+		 SELECT
+			POST.*,
+			IMG.save_file_nm
+		FROM
+			(
+				SELECT
+					P.POST_NO,
+					P.USER_ID,
+					U.USER_NM,
+					P.POST_CONT,
+					P.FST_REG_YMD,
+					P.LST_MOD_YMD
+				FROM
+					POST AS P
+					JOIN [USER] AS U ON P.USER_ID = U.USER_ID
+				WHERE
+					P.USER_ID IN (
+						#{user_id},
+						(
+							SELECT
+								FRND_ID
+							FROM
+								USER_FRND_MG
+							WHERE
+								USER_ID = #{user_id}
+								AND ACCP_YN = 'Y'
+						)
+					)
+				ORDER BY
+					P.LST_MOD_YMD DESC
+			) POST
+			LEFT JOIN POST_ATCH_IMG AS IMG ON POST.POST_NO = IMG.POST_NO;
+     </select>
+     
+     <insert id="addPost" parameterType="com.nhncorp.facenote.model.PostModel" keyProperty="post_no">
+         /* post.addPost */
+         INSERT INTO 
+           POST (
+   				USER_ID,
+				POST_CONT,
+				FST_REG_YMD,
+				LST_MOD_YMD
+				)
+		 VALUES (
+				#{user_id},
+				#{post_cont},
+				#{fst_reg_ymd},
+				#{lst_mod_ymd}
+				);
+     </insert>
+     
+     <insert id="addAtchFile" parameterType="com.nhncorp.facenote.model.PostModel" keyProperty="post_no">
+         /* post.addAtchFile */
+         INSERT INTO 
+  POST_ATCH_IMG (
+   				POST_NO,
+				RL_FILE_NM,
+				SAVE_FILE_NM,
+				FILE_SZ
+				)
+		 VALUES (
+				#{post_no},
+				#{rl_file_nm},
+				#{save_file_nm},
+				#{file_sz}
+				);
+     </insert>
+     
+     <update id="modifyPost" parameterType="com.nhncorp.facenote.model.PostModel">
+         /* post.modifyPost */
+         UPDATE POST
+            SET POST_CONT = #{post_cont},
+				LST_MOD_YMD = #{lst_mod_ymd}
+		  WHERE POST_NO = #{post_no};
+     </update>
+     
+     <update id="deletePost" parameterType="long">
+         /* post.deletePost */
+         UPDATE POST
+            SET USE_YN = 'N'
+		  WHERE POST_NO = #{post_no};
+     </update>
+ </mapper>

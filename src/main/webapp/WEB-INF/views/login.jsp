@@ -4,14 +4,13 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
-<title>Main</title>
+<title>Login</title>
 </head>
 <body>
-<ul>
-	<li><a href="/viewusers.nhn">사용자 목록</a></li>
-	<li><a href="/adduserform.nhn">사용자 추가</a></li>
-	<li><a href="/addfriendform.nhn">친구 추가</a></li>
-	<li><a href="/writepostform.nhn">포스트 작성</a></li>
-</ul>
+<form action="checklogin.nhn" method="post">
+ID : <input type="text" name="user_id" /><br>
+PASSWORD : <input type="text" name="password" /><br>
+<input type="submit" value="로그인" />
+</form>
 </body>
 </html>

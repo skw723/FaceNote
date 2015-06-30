@@ -1,9 +1,9 @@
 package com.nhncorp.facenote.controller;
 
-import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.nhncorp.facenote.bo.UserBO;
-import com.nhncorp.facenote.model.User;
-import com.nhncorp.facenote.mybatis.TestModel;
+import com.nhncorp.facenote.model.FriendModel;
+import com.nhncorp.facenote.model.UserModel;
 
 @Controller
 public class UserController {
@@ -31,22 +31,13 @@ public class UserController {
 	/**모든 사용자 조회(아이디, 친구목록)
 	 * @return
 	 */
-	@RequestMapping(value="viewusers")
-	public ModelAndView getUserList() {
-		ModelAndView mav = new ModelAndView("viewusers");
-
-		List<User> userList = null;
-		try {
-			userList = userBO.getUserList();
-		} catch (IOException e) {
-			logger.info("=== getUserList -> IOException ===");
-			logger.info(e.getMessage());
-			mav.addObject("result", "Fail");
-			return mav;
-		}
-
-		mav.addObject("result", "Success");
-		mav.addObject("users", userList);
+	@RequestMapping(value="userinfo")
+	public ModelAndView getUserList(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView("userinfo");
+		String user_id = (String) request.getSession().getAttribute("user");
+		
+		UserModel userModel = userBO.getUserInfo(user_id);
+		mav.addObject("user", userModel);
 		return mav;
 	}
 	
@@ -57,81 +48,78 @@ public class UserController {
 		return mav;
 	}
 
-	@RequestMapping(value="adduser")
-	@ResponseBody
-	public String addUser(@RequestParam(value="user")String userId, HttpServletResponse response) {
-		if(StringUtils.isEmpty(userId)) {
-			logger.info("=== addUser -> userId is Empty ===");
-			return "userId is Empty";
-		}
-		
-		boolean isSuccess = false;
-		try {
-			isSuccess = userBO.addUser(userId);
-		} catch (IOException e) {
-			logger.info("=== addUser -> IOException ===");
-			logger.info(e.getMessage());
-			return "Fail";
-		}
-
-		if(isSuccess) {
-			return "Success";
-		} else {
-			logger.info("=== addUser -> Already exist userId ===");
-			return "Already exist userId";
-		}
-	}
+//	@RequestMapping(value="adduser")
+//	@ResponseBody
+//	public String addUser(@RequestParam(value="user")String userId, HttpServletResponse response) {
+//		if(StringUtils.isEmpty(userId)) {
+//			logger.info("=== addUser -> userId is Empty ===");
+//			return "userId is Empty";
+//		}
+//		
+//		boolean isSuccess = false;
+//		try {
+//			isSuccess = userBO.addUser(userId);
+//		} catch (IOException e) {
+//			logger.info("=== addUser -> IOException ===");
+//			logger.info(e.getMessage());
+//			return "Fail";
+//		}
+//
+//		if(isSuccess) {
+//			return "Success";
+//		} else {
+//			logger.info("=== addUser -> Already exist userId ===");
+//			return "Already exist userId";
+//		}
+//	}
 	
-	@RequestMapping(value="addfriendform")
-	public ModelAndView addFriendForm() {
-		ModelAndView mav = new ModelAndView("addfriendform");
+	@RequestMapping(value="friend")
+	public ModelAndView addFriendForm(HttpSession session) {
+		ModelAndView mav = new ModelAndView("friend");
+		String user_id = (String) session.getAttribute("user");
+		
+		List<FriendModel> frndList = userBO.getFriendList(user_id);
+		mav.addObject("friends", frndList);
+		
+		List<FriendModel> notAccpList = userBO.getNotAccpList(user_id);
+		mav.addObject("notaccps", notAccpList);
 		
 		return mav;
 	}
 	
 	@RequestMapping(value="addfriend")
 	@ResponseBody
-	public String addFriend(
-			@RequestParam(value="user")String userId,
-			@RequestParam(value="friend")String friendId) {
-		if(StringUtils.isEmpty(userId) || StringUtils.isEmpty(friendId)) {
-			logger.info("=== addFriend -> One or more parameter is empty ===");
-			return "One or more parameter is empty";
+	public String addFriend(@RequestParam String frnd_id, HttpSession session) {
+		String user = (String) session.getAttribute("user");
+		
+		if(StringUtils.equals(user, frnd_id)) {
+			return "fail";
 		}
 		
-		if(StringUtils.equals(userId, friendId)) {
-			logger.info("=== addFriend -> Two parameter is equivalent ===");
-			return "Two parameter is equivalent";
+		FriendModel frndModel = new FriendModel();
+		frndModel.setUser_id(user);
+		frndModel.setFrnd_id(frnd_id);
+		
+		boolean isSuccess = userBO.addFriend(frndModel);
+		
+		if(isSuccess == true) {
+			return "success";
 		}
 		
-		boolean isSuccess = false;
-		
-		try {
-			isSuccess = userBO.addFriend(userId, friendId);
-		} catch (IOException e) {
-			logger.info("=== addFriend -> IOException ===");
-			logger.info(e.getMessage());
-			return "Fail";
-		}
-		
-		if(!isSuccess) {
-			logger.info("=== addFriend -> Could not find user ===");
-			return "Could not find user";
-		}
-		
-		return "Success";
+		return "fail";
 	}
 	
-	@RequestMapping(value="mybatis")
+	@RequestMapping("accpfrnd")
 	@ResponseBody
-	public String my() {
-		try {
-			//SqlSession s = session.getObject().openSession();
-			List<TestModel> list = session.selectList("TEST.get");
-			return list.get(0).toString();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public String accpFrnd(@RequestParam String frnd_id, HttpSession session) {
+		String user = (String) session.getAttribute("user");
+		FriendModel frndModel = new FriendModel();
+		frndModel.setUser_id(frnd_id);
+		frndModel.setFrnd_id(user);
+		
+		boolean isSuccess = userBO.accpFrnd(frndModel);
+		if(isSuccess) { 
+			return "success";
 		}
 		return "fail";
 	}
