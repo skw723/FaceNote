@@ -1,11 +1,14 @@
 package com.nhncorp.facenote.model;
 
+import java.util.Date;
+
 public class AtchFileModel {
 	private long atch_img_no;
 	private long post_no;
 	private String rl_file_nm;
 	private String save_file_nm;
 	private int file_sz;
+	private Date reg_ymdt;
 	private String use_yn;
 	public long getAtch_img_no() {
 		return atch_img_no;
@@ -36,6 +39,12 @@ public class AtchFileModel {
 	}
 	public void setFile_sz(int file_sz) {
 		this.file_sz = file_sz;
+	}
+	public Date getReg_ymdt() {
+		return reg_ymdt;
+	}
+	public void setReg_ymdt(Date reg_ymdt) {
+		this.reg_ymdt = reg_ymdt;
 	}
 	public String getUse_yn() {
 		return use_yn;

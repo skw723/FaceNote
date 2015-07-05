@@ -9,7 +9,6 @@ import com.nhncorp.facenote.model.UserModel;
 
 public interface UserBO {
 	public UserModel getUserInfo(String user_id);
-	//public boolean addUser(String userId) throws IOException;
 	public boolean addFriend(FriendModel frndModel);
 	public List<FriendModel> getFriendList(String userId);
 	public List<FriendModel> getNotAccpList(String userId);

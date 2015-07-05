@@ -2,27 +2,37 @@ package com.nhncorp.facenote;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 public class CommonInterceptor extends HandlerInterceptorAdapter{
-	private final String excludePath = "/viewpost"; 
 
 	@Override
 	public boolean preHandle(HttpServletRequest request,
 			HttpServletResponse response, Object handler) throws Exception {
-		String referer = request.getHeader("Referer");
-		String user = (String) request.getSession().getAttribute("user");
+		//TODO referer 처리(상황마다 다름)
+		InterceptorCheck check = ((HandlerMethod) handler).getMethodAnnotation(InterceptorCheck.class);
 		
-		/*String url = request.getRequestURI();
-		if(StringUtils.startsWith(url, excludePath)) {
+		if(check == null) {
 			return super.preHandle(request, response, handler);
-		}*/
-		/*if(referer == null || StringUtils.isEmpty(user)) {
-			response.sendRedirect("login.nhn");
-			return false;
-		}*/
+		}
+		
+		HttpSession session = request.getSession(false);
+		if(check.session()) {
+			if(session == null) {
+				response.sendRedirect("login.nhn");
+				return false;
+			}
+			String user = (String) request.getSession().getAttribute("user");
+			if(StringUtils.isEmpty(user)) {
+				response.sendRedirect("login.nhn");
+				return false;
+			}
+		}
+		
 		return super.preHandle(request, response, handler);
 	}
 }

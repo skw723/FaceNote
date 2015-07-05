@@ -58,8 +58,8 @@
          SELECT USER_ID,
          		FRND_ID,
          		ACCP_YN,
-         		APLY_YMD,
-         		ACCP_YMD
+         		APLY_YMDT,
+         		ACCP_YMDT
            FROM	USER_FRND_MG
           WHERE	USER_ID = #{user_id}
          		AND
@@ -70,8 +70,8 @@
          SELECT USER_ID,
          		FRND_ID,
          		ACCP_YN,
-         		APLY_YMD,
-         		ACCP_YMD
+         		APLY_YMDT,
+         		ACCP_YMDT
            FROM	USER_FRND_MG
           WHERE	FRND_ID = #{user_id}
          		AND
@@ -86,12 +86,12 @@
 				USER_ID,
 				FRND_ID,
 				ACCP_YN,
-				APLY_YMD,
-				ACCP_YMD
+				APLY_YMDT,
+				ACCP_YMDT
 			FROM
 				USER_FRND_MG
 			WHERE
-				USER_ID = 'skw723'
+				USER_ID = #{user_id}
 				AND ACCP_YN = 'N'
 				AND USE_YN = 'Y'
 			UNION ALL
@@ -99,12 +99,12 @@
 				USER_ID,
 				FRND_ID,
 				ACCP_YN,
-				APLY_YMD,
-				ACCP_YMD
+				APLY_YMDT,
+				ACCP_YMDT
 			FROM
 				USER_FRND_MG
 			WHERE
-				FRND_ID = 'skw723'
+				FRND_ID = #{user_id}
 				AND ACCP_YN = 'N'
 				AND USE_YN = 'Y';
      </select>
@@ -115,16 +115,17 @@
    USER_FRND_MG (
    				USER_ID,
 				FRND_ID,
-				APLY_YMD
+				APLY_YMDT
 				)
 		 VALUES (
 				#{user_id},
 				#{frnd_id},
-				#{aply_ymd}
+				#{aply_ymdt}
 				)
 		     ON DUPLICATE KEY 
 		 UPDATE USE_YN = 'Y',
-		 		APLY_YMD = #{aply_ymd};
+		 		ACCP_YN = 'N',
+		 		APLY_YMDT = #{aply_ymdt};
      </insert>
      
      <update id="accpFrnd" parameterType="com.nhncorp.facenote.model.FriendModel">

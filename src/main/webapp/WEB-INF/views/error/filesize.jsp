@@ -4,12 +4,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Add User</title>
+<title>Error</title>
 </head>
 <body>
-<form action="adduser.nhn" method="post">
-사용자 ID : <input type="text" name="user" />
-<input type="submit" value="등록" />
-</form>
+파일사이즈 초과
 </body>
 </html>

@@ -4,38 +4,47 @@
  <mapper namespace="post">
      <select id="getPostList" parameterType="java.lang.String" resultType="com.nhncorp.facenote.model.PostModel">
          /* post.getPostList */
-		 SELECT
-			POST.*,
-			IMG.save_file_nm
-		FROM
-			(
-				SELECT
-					P.POST_NO,
-					P.USER_ID,
-					U.USER_NM,
-					P.POST_CONT,
-					P.FST_REG_YMD,
-					P.LST_MOD_YMD
-				FROM
-					POST AS P
-					JOIN [USER] AS U ON P.USER_ID = U.USER_ID
-				WHERE
-					P.USER_ID IN (
-						#{user_id},
-						(
+			SELECT
+				POST.*,
+				IMG.save_file_nm
+			FROM
+				(
+					SELECT
+						P.POST_NO,
+						P.USER_ID,
+						U.USER_NM,
+						P.POST_CONT,
+						P.FST_REG_YMDT,
+						P.LST_MOD_YMDT
+					FROM
+						POST AS P
+						JOIN [USER] AS U ON P.USER_ID = U.USER_ID
+					WHERE
+						P.USER_ID = #{user_id}
+						OR EXISTS (
 							SELECT
 								FRND_ID
 							FROM
 								USER_FRND_MG
 							WHERE
-								USER_ID = #{user_id}
+								USER_ID = P.USER_ID
+								AND FRND_ID = #{user_id}
+								AND ACCP_YN = 'Y'
+							UNION ALL
+							SELECT
+								USER_ID
+							FROM
+								USER_FRND_MG
+							WHERE
+								FRND_ID = P.USER_ID
+								AND USER_ID = #{user_id}
 								AND ACCP_YN = 'Y'
 						)
-					)
-				ORDER BY
-					P.LST_MOD_YMD DESC
-			) POST
-			LEFT JOIN POST_ATCH_IMG AS IMG ON POST.POST_NO = IMG.POST_NO;
+						AND P.USE_YN = 'Y'
+					ORDER BY
+						P.LST_MOD_YMDT DESC
+				) POST
+				LEFT JOIN POST_ATCH_IMG AS IMG ON POST.POST_NO = IMG.POST_NO;
      </select>
      
      <insert id="addPost" parameterType="com.nhncorp.facenote.model.PostModel" keyProperty="post_no">
@@ -44,14 +53,14 @@
            POST (
    				USER_ID,
 				POST_CONT,
-				FST_REG_YMD,
-				LST_MOD_YMD
+				FST_REG_YMDT,
+				LST_MOD_YMDT
 				)
 		 VALUES (
 				#{user_id},
 				#{post_cont},
-				#{fst_reg_ymd},
-				#{lst_mod_ymd}
+				#{fst_reg_ymdt},
+				#{lst_mod_ymdt}
 				);
      </insert>
      
@@ -62,13 +71,15 @@
    				POST_NO,
 				RL_FILE_NM,
 				SAVE_FILE_NM,
-				FILE_SZ
+				FILE_SZ,
+				REG_YMDT
 				)
 		 VALUES (
 				#{post_no},
 				#{rl_file_nm},
 				#{save_file_nm},
-				#{file_sz}
+				#{file_sz},
+				#{reg_ymdt}
 				);
      </insert>
      
@@ -76,7 +87,7 @@
          /* post.modifyPost */
          UPDATE POST
             SET POST_CONT = #{post_cont},
-				LST_MOD_YMD = #{lst_mod_ymd}
+				LST_MOD_YMDT = #{lst_mod_ymdt}
 		  WHERE POST_NO = #{post_no};
      </update>
      

@@ -1,7 +1,5 @@
 package com.nhncorp.facenote.controller;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -12,7 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
+import com.nhncorp.facenote.InterceptorCheck;
 import com.nhncorp.facenote.bo.UserBO;
 import com.nhncorp.facenote.model.UserModel;
 
@@ -23,43 +23,38 @@ public class LoginController {
 	
 	private static final Logger logger = Logger.getLogger(PostController.class);
 	
-	@RequestMapping(value="login")
+	@RequestMapping(value="index")	
+	@InterceptorCheck(session=true)
 	public ModelAndView index(HttpSession session) {
-		boolean isLogin = userBO.isLoginState(session);
-		ModelAndView mav = new ModelAndView();
-		
-		if(isLogin) {
-			mav.setViewName("redirect:main.nhn");
-		} else {
-			mav.setViewName("login");
-		}
-		return mav;
+		return new ModelAndView("main");
 	}
 	
 	@RequestMapping(value="checklogin")
-	public void login(HttpServletRequest request, HttpServletResponse response, 
-			@ModelAttribute("UserModel") UserModel userModel) throws IOException {
+	public RedirectView checkLogin(HttpServletRequest request, HttpServletResponse response, 
+			@ModelAttribute("UserModel") UserModel userModel) {
 		boolean isLogin = userBO.isLogin(userModel);
 		
 		if(isLogin) {
 			request.getSession().setAttribute("user", userModel.getUser_id());
-			response.sendRedirect("main.nhn");
-			return ;
+			return new RedirectView("main.nhn");
 		}
-		response.sendRedirect("index.nhn");
+		return new RedirectView("login.nhn");
+	}
+	
+	@RequestMapping(value="login")
+	public ModelAndView login() {
+		return new ModelAndView("login");
 	}
 	
 	@RequestMapping(value="main")
+	@InterceptorCheck(session=true)
 	public ModelAndView main() {
-		ModelAndView mav = new ModelAndView("main");
-		
-		return mav;
+		return new ModelAndView("main");
 	}
 	
 	@RequestMapping(value="logout")
 	public String logout(HttpSession session) {
 		session.invalidate();
-		
 		return "redirect:login.nhn";
 	}
 }

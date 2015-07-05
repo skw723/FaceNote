@@ -1,12 +1,14 @@
 package com.nhncorp.facenote.model;
 
+import java.util.Date;
+
 
 public class FriendModel {
 	private String user_id;
 	private String frnd_id;
 	private String accp_yn;
-	private String aply_ymd;
-	private String accp_ymd;
+	private Date aply_ymdt;
+	private Date accp_ymdt;
 	
 	public String getUser_id() {
 		return user_id;
@@ -26,16 +28,16 @@ public class FriendModel {
 	public void setAccp_yn(String accp_yn) {
 		this.accp_yn = accp_yn;
 	}
-	public String getAply_ymd() {
-		return aply_ymd;
+	public Date getAply_ymdt() {
+		return aply_ymdt;
 	}
-	public void setAply_ymd(String aply_ymd) {
-		this.aply_ymd = aply_ymd;
+	public void setAply_ymdt(Date aply_ymdt) {
+		this.aply_ymdt = aply_ymdt;
 	}
-	public String getAccp_ymd() {
-		return accp_ymd;
+	public Date getAccp_ymdt() {
+		return accp_ymdt;
 	}
-	public void setAccp_ymd(String accp_ymd) {
-		this.accp_ymd = accp_ymd;
+	public void setAccp_ymdt(Date accp_ymdt) {
+		this.accp_ymdt = accp_ymdt;
 	}
 }

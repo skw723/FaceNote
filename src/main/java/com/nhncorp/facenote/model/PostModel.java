@@ -7,6 +7,8 @@
 
 package com.nhncorp.facenote.model;
 
+import java.util.Date;
+
 
 /**
  * @author 심규원
@@ -17,8 +19,8 @@ public class PostModel {
 	private String user_nm;
 	private String post_cont;
 	private String save_file_nm;
-	private String fst_reg_ymd;
-	private String lst_mod_ymd;
+	private Date fst_reg_ymdt;
+	private Date lst_mod_ymdt;
 	private String use_yn;
 	
 	public PostModel(){
@@ -65,20 +67,20 @@ public class PostModel {
 		this.post_cont = post_cont;
 	}
 
-	public String getFst_reg_ymd() {
-		return fst_reg_ymd;
+	public Date getFst_reg_ymdt() {
+		return fst_reg_ymdt;
 	}
 
-	public void setFst_reg_ymd(String fst_reg_ymd) {
-		this.fst_reg_ymd = fst_reg_ymd;
+	public void setFst_reg_ymd(Date fst_reg_ymdt) {
+		this.fst_reg_ymdt = fst_reg_ymdt;
 	}
 
-	public String getLst_mod_ymd() {
-		return lst_mod_ymd;
+	public Date getLst_mod_ymdt() {
+		return lst_mod_ymdt;
 	}
 
-	public void setLst_mod_ymd(String lst_mod_ymd) {
-		this.lst_mod_ymd = lst_mod_ymd;
+	public void setLst_mod_ymd(Date lst_mod_ymdt) {
+		this.lst_mod_ymdt = lst_mod_ymdt;
 	}
 
 	public String getUse_yn() {
