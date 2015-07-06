@@ -1,13 +1,14 @@
 package com.nhncorp.facenote.controller;
 
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,6 @@ import com.nhncorp.facenote.InterceptorCheck;
 import com.nhncorp.facenote.bo.PostBO;
 import com.nhncorp.facenote.bo.UserBO;
 import com.nhncorp.facenote.model.PostModel;
-import com.nhncorp.facenote.model.PostModelValidator;
 
 @Controller
 public class PostController {
@@ -43,14 +43,12 @@ public class PostController {
 		return mav;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value="addpost")
 	@ResponseBody
 	@InterceptorCheck(session=true)
-	public String addFriend(@ModelAttribute PostModel postModel, HttpSession session, MultipartFile image, BindingResult bindingResult) {
-		new PostModelValidator().validate(postModel, bindingResult);
-		if(bindingResult.hasErrors()) {
-			return "fail";
-		}
+	public String addpost(@ModelAttribute PostModel postModel, HttpSession session, MultipartFile image) throws Exception {
+		JSONObject result = new JSONObject();
 		
 		String user = (String) session.getAttribute("user");
 		postModel.setUser_id(user);
@@ -58,44 +56,60 @@ public class PostController {
 		boolean isSuccess = postBO.addPost(postModel, image);
 		
 		if(isSuccess == true) {
-			return "success";
+			result.put("result", "success");
+			result.put("msg", URLEncoder.encode("포스트가 등록되었습니다", "UTF-8"));
+			return result.toString();
 		}
 		
-		return "fail";
+		result.put("result", "fail");
+		result.put("msg", URLEncoder.encode("포스트 등록에 실패했습니다.", "UTF-8"));
+		return result.toString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value="modifypost")
 	@ResponseBody
 	@InterceptorCheck(session=true)
-	public String modifyPost(@ModelAttribute PostModel postModel, BindingResult bindingResult) {
-		new PostModelValidator().validate(postModel, bindingResult);
-		if(bindingResult.hasErrors()) {
-			return "fail";
-		}
+	public String modifyPost(@ModelAttribute PostModel postModel) throws Exception {
+		JSONObject result = new JSONObject();
 		
 		boolean isSuccess = postBO.modifyPost(postModel);
 		
 		if(isSuccess) { 
-			return "success";
+			result.put("result", "success");
+			result.put("msg", URLEncoder.encode("포스트 수정에 성공했습니다.", "UTF-8"));
+			return result.toString();
 		}
-		return "fail";
+		
+		result.put("result", "fail");
+		result.put("msg", URLEncoder.encode("포스트 수정에 실패했습니다.", "UTF-8"));
+		return result.toString();
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value="deletepost")
 	@ResponseBody
 	@InterceptorCheck(session=true)
-	public String deletePost(@RequestParam long post_no) {
+	public String deletePost(@RequestParam long post_no) throws Exception {
 		boolean isSuccess = postBO.deletePost(post_no);
 		
+		JSONObject result = new JSONObject();
+		
 		if(isSuccess) {
-			return "success";
+			result.put("result", "success");
+			result.put("msg", URLEncoder.encode("포스트 삭제에 성공했습니다.", "UTF-8"));
+			return result.toString();
 		} 
-		return "fail";
+		
+		result.put("result", "fail");
+		result.put("msg", URLEncoder.encode("포스트 삭제에 실패했습니다.", "UTF-8"));
+		return result.toString();
 	}
 	
 	@ExceptionHandler(Exception.class)
-	@ResponseBody
-	public String atchFileSzException(Exception e) {
-		return e.toString();
+	public ModelAndView atchFileSzException(Exception e) {
+		logger.error(e.toString());
+		ModelAndView mav = new ModelAndView("error/error");
+		return mav;
 	}
 }

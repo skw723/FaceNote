@@ -1,11 +1,11 @@
 package com.nhncorp.facenote.bo;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +18,8 @@ public class UserBOImpl implements UserBO {
 	@Autowired
 	private UserDAO userDAO;
 	
+	private static final Logger logger = Logger.getLogger(UserBOImpl.class);
+	
 	@Override
 	public UserModel getUserInfo(String user_id) {
 		return userDAO.getUserInfo(user_id);
@@ -28,6 +30,7 @@ public class UserBOImpl implements UserBO {
 		int result = userDAO.isLogin(userModel);
 		
 		if(result == 0){
+			logger.info("isLogin return 0");
 			return false;
 		}
 		return true;
@@ -35,24 +38,26 @@ public class UserBOImpl implements UserBO {
 
 	@Override
 	public boolean addFriend(FriendModel frndModel) {
-		UserModel userModel = new UserModel();
-		userModel.setUser_id(frndModel.getFrnd_id());
-		frndModel.setAply_ymdt(new Date());
-		
-		if(userDAO.isExistUser(userModel) == 0) {
+		if(StringUtils.equals(frndModel.getUser_id(), frndModel.getFrnd_id())) {
+			logger.info("user_id, frnd_id equals");
 			return false;
 		}
 		
-		//TODO 이미 친구 관계인지 확인(없거나 사용하지 않는 상태)
+		UserModel userModel = new UserModel();
+		userModel.setUser_id(frndModel.getFrnd_id());
+		
+		if(isExistUser(userModel.getUser_id()) == true) {
+			logger.info(userModel.getUser_id() + " not exist");
+			return false;
+		}
+		
+		//이미 친구 관계인지 확인(없거나 사용하지 않는 상태)
 		if(userDAO.isExistFriend(frndModel) != 0) {
+			logger.info(frndModel.getUser_id() + " and" + frndModel.getFrnd_id() + " already friends");
 			return false;
 		}
 		
 		userDAO.addFriend(frndModel);			
-		/*try {
-		} catch(DuplicateKeyException e) {
-			return false;
-		}*/
 		return true;
 	}
 
@@ -73,7 +78,14 @@ public class UserBOImpl implements UserBO {
 
 	@Override
 	public boolean isExistUser(String userId) {
-		return false;
+		int result = userDAO.isExistUser(userId);
+		
+		if(result == 0) {
+			logger.info(userId + " not exist");
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
@@ -83,8 +95,13 @@ public class UserBOImpl implements UserBO {
 
 	@Override
 	public boolean accpFrnd(FriendModel frndModel) {
-		frndModel.setAccp_ymdt(new Date());
 		int result = userDAO.accpFrnd(frndModel);
-		return result == 0 ? false : true;
+		
+		if(result == 0) {
+			logger.info("accpFrnd fail");
+			return false;
+		}
+		
+		return true;
 	}
 }

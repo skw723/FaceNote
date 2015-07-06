@@ -16,7 +16,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public UserModel getUserInfo(String user_id) {
-		return session.selectOne("user.getUserInfo", user_id);
+		return session.selectOne("user.getUserInfo", user_id); 
 	}
 	
 	@Override
@@ -30,8 +30,8 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public int isExistUser(UserModel userModel) {
-		return (Integer)session.selectOne("user.isExistUser", userModel);
+	public int isExistUser(String user_id) {
+		return (Integer)session.selectOne("user.isExistUser", user_id);
 	}
 
 	@Override
@@ -52,10 +52,5 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public int accpFrnd(FriendModel frndModel) {
 		return (Integer)session.update("user.accpFrnd", frndModel);
-	}
-
-	@Override
-	public int isExistFrnd(FriendModel frndModel) {
-		return (Integer)session.update("user.isExistFrnd", frndModel);
 	}
 }

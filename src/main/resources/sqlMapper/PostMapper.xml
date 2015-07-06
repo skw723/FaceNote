@@ -15,30 +15,33 @@
 						U.USER_NM,
 						P.POST_CONT,
 						P.FST_REG_YMDT,
-						P.LST_MOD_YMDT
+						P.LST_MOD_YMDT,
+						P.USE_YN
 					FROM
 						POST AS P
 						JOIN [USER] AS U ON P.USER_ID = U.USER_ID
 					WHERE
-						P.USER_ID = #{user_id}
-						OR EXISTS (
-							SELECT
-								FRND_ID
-							FROM
-								USER_FRND_MG
-							WHERE
-								USER_ID = P.USER_ID
-								AND FRND_ID = #{user_id}
-								AND ACCP_YN = 'Y'
-							UNION ALL
-							SELECT
-								USER_ID
-							FROM
-								USER_FRND_MG
-							WHERE
-								FRND_ID = P.USER_ID
-								AND USER_ID = #{user_id}
-								AND ACCP_YN = 'Y'
+						(
+							P.USER_ID = #{user_id}
+							OR EXISTS (
+								SELECT
+									FRND_ID
+								FROM
+									USER_FRND_MG
+								WHERE
+									USER_ID = P.USER_ID
+									AND FRND_ID = #{user_id}
+									AND ACCP_YN = 'Y'
+								UNION ALL
+								SELECT
+									USER_ID
+								FROM
+									USER_FRND_MG
+								WHERE
+									FRND_ID = P.USER_ID
+									AND USER_ID = #{user_id}
+									AND ACCP_YN = 'Y'
+							)
 						)
 						AND P.USE_YN = 'Y'
 					ORDER BY
@@ -59,8 +62,8 @@
 		 VALUES (
 				#{user_id},
 				#{post_cont},
-				#{fst_reg_ymdt},
-				#{lst_mod_ymdt}
+				SYSDATETIME,
+				SYSDATETIME
 				);
      </insert>
      
@@ -79,7 +82,7 @@
 				#{rl_file_nm},
 				#{save_file_nm},
 				#{file_sz},
-				#{reg_ymdt}
+				SYSDATETIME
 				);
      </insert>
      
@@ -87,7 +90,7 @@
          /* post.modifyPost */
          UPDATE POST
             SET POST_CONT = #{post_cont},
-				LST_MOD_YMDT = #{lst_mod_ymdt}
+				LST_MOD_YMDT = SYSDATETIME
 		  WHERE POST_NO = #{post_no};
      </update>
      

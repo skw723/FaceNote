@@ -8,7 +8,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Post</title>
 <script src="resources/jquery-1.11.3.min.js"></script>
+<script src="http://malsup.github.io/min/jquery.form.min.js"></script>
 <script type="text/javascript">
+	var sendFlagAdd = false;
+	var sendFlagDelete = false;
+	var sendFlagModify = false;
 	function readURL(input) {
 		if(input.files && input.files[0]) {
 			var reader = new FileReader();
@@ -19,8 +23,28 @@
 		}
 	}
 	function clickDelete(post_no) {
-		var url = "/deletepost.nhn?post_no=" + post_no;
-		location.href = url;
+		if(sendFlagDelete == true) {
+			return;
+		}
+		sendFlagDelete = true;
+		
+		var param = "post_no=" + post_no;
+		$.ajax({
+            url:'/deletepost.nhn',
+            dataType: "JSON",
+            data: param,
+            success:function(data) {
+            	sendFlagDelete = false;
+            	alert(decodeURIComponent(data.msg));
+            	if(data.result == "success") {
+            		location.reload();    		
+            	}
+            },
+            error:function(data) {
+            	sendFlagDelete = false;
+            	alert("통신실패");
+            }
+        })
 	}
 	function clickModify(index, post_no) {
 		var status = $("#modifybtn" + index).attr('value');
@@ -39,19 +63,28 @@
 			$("#cont" + index).attr('readonly',true);
 			$("#modifybtn" + index).attr('value','수정');
 			
-			var form = document.createElement("form");
-			form.setAttribute("method", "post");
-		    form.setAttribute("action", "/modifypost.nhn");
-		    var params = {'post_no':post_no,'post_cont':cont};
-		    for(var key in params) {
-		        var hiddenField = document.createElement("input");
-		        hiddenField.setAttribute("type", "hidden");
-		        hiddenField.setAttribute("name", key);
-		        hiddenField.setAttribute("value", params[key]);
-		        form.appendChild(hiddenField);
-		    }
-		    document.body.appendChild(form);
-		    form.submit();
+			if(sendFlagModify == true) {
+				return;
+			}
+			sendFlagModify = true;
+			
+			var param = "post_no=" + post_no + "&post_cont=" + $("#cont"+index).val();
+			$.ajax({
+	            url:'/modifypost.nhn',
+	            dataType: "JSON",
+	            data: param,
+	            success:function(data) {
+	            	sendFlagModify = false;
+	            	alert(decodeURIComponent(data.msg));
+	            	if(data.result == "success") {
+	            		location.reload();
+	            	}
+	            },
+	            error:function(data) {
+	            	sendFlagModify = false;
+	            	alert("통신실패");
+	            }
+	        })
 		}
 	}
 	function formValidation() {
@@ -75,16 +108,43 @@
 		var count = text.bytes();
 		document.getElementById("count").innerHTML = count;
 	}
+	$(function() {
+		if(sendFlagAdd == true) {
+			return;
+		}
+		sendFlagAdd = true;
+		$("#form").ajaxForm({
+			dataType: "json",
+			beforeSubmit: function() {
+				if($("#post_cont").val() == "") {
+					alert("내용을 입력하세요");
+					return false;
+				}
+				return true;
+			},
+			success: function(data) {
+				sendFlagAdd = false;
+				alert(decodeURIComponent(data.msg));
+            	if(data.result == "success") {
+            		location.reload();    		
+            	}
+			},
+			error: function() {
+				sendFlagAdd = false;
+				alert("통신실패");
+			}
+		});
+	});
 </script>
 </head>
 <body>
-<form action="addpost.nhn" method="post" enctype="multipart/form-data" onsubmit="return formValidation();" name="form">
+<form action="addpost.nhn" method="post" enctype="multipart/form-data" onsubmit="return formValidation();" id="form" name="form">
 내용 : <textarea rows="5" cols="20" name="post_cont" id="post_cont" onkeyup="changeBytes();"></textarea><span id="count">0</span>/1000 bytes<br> 
-이미지 : <input type="file" name="image" accept="image/*" onchange="readURL(this);"/><br>
-<input type="submit" value="등록" /><br>
-미리보기<br><img id="preview" alt="preview" src="" width="320" height="auto"><br>
+이미지 : <input type="file" id="image" name="image" accept="image/*" onchange="readURL(this);"/><br>
+<input type="submit" value="등록"/><br>
+미리보기<br><img id="preview" alt="preview" src="" width="240" height="auto"><br><br>
 </form>
-<table border="1">
+<table style="border: 1px solid; text-align: center;">
 	<tr>
 		<th>시간</th>
 		<th>작성자</th>
@@ -95,12 +155,12 @@
 	</tr>
 	<c:forEach var="post" items="${posts}" varStatus="status">
 	<tr>
-		<td>${post.lst_mod_ymdt}</td>
+		<td>${post.formattedDate}</td>
 		<td>${post.user_nm}</td>
-		<td><input type="text" id="cont${status.index}" readonly="readonly" value="${post.post_cont}" ></td>
+		<td><textarea rows="12" cols="40" id="cont${status.index}" readonly="readonly" style="resize:none">${post.post_cont}</textarea></td>
 		<td>
 			<c:if test="${post.save_file_nm != null && post.save_file_nm != ''}">
-				<img src="/image/${post.save_file_nm}" width="320" height="auto"/>			
+				<img src="/image/${post.save_file_nm}" width="240" height="auto"/>			
 			</c:if>
 		</td>
 		<c:if test="${post.user_id eq user}">

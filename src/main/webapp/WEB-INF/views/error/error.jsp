@@ -7,6 +7,6 @@
 <title>Error</title>
 </head>
 <body>
-에러페이지
+오류가 발생했습니다.
 </body>
 </html>

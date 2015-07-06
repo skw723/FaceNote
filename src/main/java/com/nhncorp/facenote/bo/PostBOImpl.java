@@ -1,7 +1,6 @@
 package com.nhncorp.facenote.bo;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -32,57 +31,63 @@ public class PostBOImpl implements PostBO {
 	}
 
 	@Override
-	@Transactional
-	public boolean addPost(PostModel postModel, MultipartFile file) {
-		Date current = new Date();
-		postModel.setFst_reg_ymd(current);
-		postModel.setLst_mod_ymd(current);
-		
-		if(file == null) {
-			return false;
-		}
-				
+	@Transactional(rollbackFor=Exception.class)
+	public boolean addPost(PostModel postModel, MultipartFile file) throws Exception {
 		if(postDAO.addPost(postModel) == 0) {
+			logger.error("addPost return 0");
 			return false;
 		}
 		
-		if(!file.isEmpty()) {
+		if(file != null && !file.isEmpty()) {
 			saveFile(file, postModel.getPost_no());
 		}
 		
 		return true;
 	}
 	
-	private boolean saveFile(MultipartFile file, long post_no) {
+	private boolean saveFile(MultipartFile file, long post_no) throws Exception {
 		AtchFileModel fileModel = new AtchFileModel();
 		fileModel.setPost_no(post_no);
 		fileModel.setRl_file_nm(file.getOriginalFilename());
 		fileModel.setSave_file_nm(String.valueOf((System.nanoTime())));
-		//TODO long -> int 형변환
 		fileModel.setFile_sz((int)file.getSize());
-		fileModel.setReg_ymdt(new Date());
 		File imageFile = new File(imageFilePath + File.separator + fileModel.getSave_file_nm());
-		//TODO 파일저장 실패 시 예외처리 해줘야 함
+		
 		try {
 			file.transferTo(imageFile);
 		} catch (Exception e) {
-			//TODO 혹시라도 쓰다남은 파일이 있는경우 삭제하는 로직
+			logger.error("File Save Fail");
+			throw new Exception();
 		}
 		
-		postDAO.addAtchFile(fileModel);
+		if(postDAO.addAtchFile(fileModel) == 0) {
+			logger.error("addAtchFile return 0");
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public boolean modifyPost(PostModel postModel) {
-		postModel.setLst_mod_ymd(new Date());
 		int result = postDAO.modifyPost(postModel);
-		return result == 0 ? false : true;
+		
+		if(result == 0) {
+			logger.error("modifyPost return 0");
+			return false;
+		}
+		
+		return true;
 	}
 
 	@Override
 	public boolean deletePost(long post_no) {
 		int result = postDAO.deletePost(post_no);
-		return result == 1 ? true : false;
+		
+		if(result == 0) {
+			logger.error("deletePost return 0");
+			return false;
+		}
+
+		return true;
 	}
 }

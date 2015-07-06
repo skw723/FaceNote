@@ -10,8 +10,7 @@ public interface UserDAO {
 	public int addFriend(FriendModel frndModel);
 	public List<FriendModel> getFriendList(String userId);
 	public List<FriendModel> getNotAccpList(String userId);
-	public int isExistUser(UserModel userModel);
-	public int isExistFrnd(FriendModel frndModel);
+	public int isExistUser(String userId);
 	public int isLogin(UserModel userModel);
 	public int isExistFriend(FriendModel frndModel);
 	public int accpFrnd(FriendModel frndModel);

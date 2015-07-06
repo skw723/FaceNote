@@ -2,7 +2,7 @@
  <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
  <mapper namespace="user">
-     <select id="isExistUser" parameterType="com.nhncorp.facenote.model.UserModel" resultType="int">
+     <select id="isExistUser" parameterType="java.lang.String" resultType="int">
          /* user.isExistUser */
          SELECT COUNT(*)
          FROM	[USER]
@@ -120,12 +120,12 @@
 		 VALUES (
 				#{user_id},
 				#{frnd_id},
-				#{aply_ymdt}
+				SYSDATETIME
 				)
 		     ON DUPLICATE KEY 
 		 UPDATE USE_YN = 'Y',
 		 		ACCP_YN = 'N',
-		 		APLY_YMDT = #{aply_ymdt};
+		 		APLY_YMDT = SYSDATETIME
      </insert>
      
      <update id="accpFrnd" parameterType="com.nhncorp.facenote.model.FriendModel">

@@ -7,6 +7,7 @@
 
 package com.nhncorp.facenote.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -21,6 +22,7 @@ public class PostModel {
 	private String save_file_nm;
 	private Date fst_reg_ymdt;
 	private Date lst_mod_ymdt;
+	private String formattedDate;
 	private String use_yn;
 	
 	public PostModel(){
@@ -33,14 +35,6 @@ public class PostModel {
 
 	public void setPost_no(long post_no) {
 		this.post_no = post_no;
-	}
-
-	public String getSave_file_nm() {
-		return save_file_nm;
-	}
-
-	public void setSave_file_nm(String save_file_nm) {
-		this.save_file_nm = save_file_nm;
 	}
 
 	public String getUser_id() {
@@ -67,11 +61,19 @@ public class PostModel {
 		this.post_cont = post_cont;
 	}
 
+	public String getSave_file_nm() {
+		return save_file_nm;
+	}
+
+	public void setSave_file_nm(String save_file_nm) {
+		this.save_file_nm = save_file_nm;
+	}
+
 	public Date getFst_reg_ymdt() {
 		return fst_reg_ymdt;
 	}
 
-	public void setFst_reg_ymd(Date fst_reg_ymdt) {
+	public void setFst_reg_ymdt(Date fst_reg_ymdt) {
 		this.fst_reg_ymdt = fst_reg_ymdt;
 	}
 
@@ -79,8 +81,18 @@ public class PostModel {
 		return lst_mod_ymdt;
 	}
 
-	public void setLst_mod_ymd(Date lst_mod_ymdt) {
+	public void setLst_mod_ymdt(Date lst_mod_ymdt) {
 		this.lst_mod_ymdt = lst_mod_ymdt;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		this.formattedDate = format.format(lst_mod_ymdt);
+	}
+
+	public String getFormattedDate() {
+		return formattedDate;
+	}
+
+	public void setFormattedDate(String formattedDate) {
+		this.formattedDate = formattedDate;
 	}
 
 	public String getUse_yn() {
@@ -90,4 +102,6 @@ public class PostModel {
 	public void setUse_yn(String use_yn) {
 		this.use_yn = use_yn;
 	}
+	
+	
 }

@@ -8,7 +8,7 @@ import com.nhncorp.facenote.model.PostModel;
 
 public interface PostBO {
 	public List<PostModel> getPostList(String userId);
-	public boolean addPost(PostModel postModel, MultipartFile File);
+	public boolean addPost(PostModel postModel, MultipartFile File) throws Exception;
 	public boolean modifyPost(PostModel postModel);
 	public boolean deletePost(long post_no);
 }

@@ -9,6 +9,7 @@
 <script src="resources/jquery-1.11.3.min.js"></script>
 <script type="text/javascript">
 	var sendFlag = false;
+	var sendFlagAccp = false;
 	
 	function addFriend() {
 		if(sendFlag == true) {
@@ -39,8 +40,6 @@
 	
 	function insertTable(frnd_id) {
 		var table = document.getElementById('accp_tb');
-        // Insert a new row.
-        //var newRow = table.insertRow(table.rows.length);
         var newRow = table.insertRow(2);
         
         // 첫번째 TD
@@ -49,7 +48,33 @@
  
         // 만약 TD가 두개 이상 있을 경우
         newCell = newRow.insertCell(1);
-        newCell.innerHTML = "<a href='accpfrnd.nhn?frnd_id=" + frnd_id + "'>수락</a>";
+        newCell.innerHTML = "대기중";
+	}
+	
+	function accpFrnd(frnd_id) {
+		if(sendFlagAccp == true) {
+			return;
+		}
+		
+		sendFlagAccp = true;
+		
+		var param = "frnd_id=" + frnd_id;
+		$.ajax({
+            url:'/accpfrnd.nhn',
+            dataType: "JSON",
+            data: param,
+            success:function(data) {
+            	sendFlagAccp = false;
+            	alert(decodeURIComponent(data.msg));
+            	if(data.result == "success") {
+	            	location.reload();      		
+            	}
+            },
+            error:function(data) {
+            	sendFlagAccp = false;
+            	alert("통신실패");
+            }
+        })
 	}
 </script>
 </head>
@@ -104,7 +129,7 @@
 						</c:when>
 						<c:otherwise>
 							<td>${notaccp.user_id}</td>
-							<td><a href="accpfrnd.nhn?frnd_id=${notaccp.user_id}">수락</a></td>
+							<td><input type="button" onclick="accpFrnd('${notaccp.user_id}')" value="수락"></td>
 						</c:otherwise>
 					</c:choose>
 				</tr>

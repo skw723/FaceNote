@@ -38,6 +38,7 @@ public class LoginController {
 			request.getSession().setAttribute("user", userModel.getUser_id());
 			return new RedirectView("main.nhn");
 		}
+		logger.info("Login Fail");
 		return new RedirectView("login.nhn");
 	}
 	
@@ -53,8 +54,8 @@ public class LoginController {
 	}
 	
 	@RequestMapping(value="logout")
-	public String logout(HttpSession session) {
+	public RedirectView logout(HttpSession session) {
 		session.invalidate();
-		return "redirect:login.nhn";
+		return new RedirectView("login.nhn");
 	}
 }

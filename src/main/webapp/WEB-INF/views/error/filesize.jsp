@@ -7,6 +7,6 @@
 <title>Error</title>
 </head>
 <body>
-파일사이즈 초과
+이미지파일이 5MB보다 큽니다
 </body>
 </html>
