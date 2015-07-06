@@ -28,7 +28,8 @@
             	sendFlag = false;
             	alert(decodeURIComponent(data.msg));
             	if(data.result == "success") {
-	            	insertTable(frnd_id);        		
+            		insertAccp_TB(frnd_id);  
+	            	$("#frnd_id").val("");
             	}
             },
             error:function(data) {
@@ -38,7 +39,7 @@
         })
 	}
 	
-	function insertTable(frnd_id) {
+	function insertAccp_TB(frnd_id) {
 		var table = document.getElementById('accp_tb');
         var newRow = table.insertRow(2);
         
@@ -51,7 +52,16 @@
         newCell.innerHTML = "대기중";
 	}
 	
-	function accpFrnd(frnd_id) {
+	function insertFrnd_TB(frnd_id) {
+		var table = document.getElementById('frnd_tb');
+        var newRow = table.insertRow(2);
+        
+        // 첫번째 TD
+        var newCell = newRow.insertCell(0);
+        newCell.innerHTML = frnd_id;
+	}
+	
+	function accpFrnd(frnd_id, target) {
 		if(sendFlagAccp == true) {
 			return;
 		}
@@ -67,7 +77,8 @@
             	sendFlagAccp = false;
             	alert(decodeURIComponent(data.msg));
             	if(data.result == "success") {
-	            	location.reload();      		
+            		target.parentElement.parentElement.remove();
+            		insertFrnd_TB(frnd_id);
             	}
             },
             error:function(data) {
@@ -84,7 +95,7 @@
 		<input type="button" value="친구추가" onclick="addFriend()"/>
 	</form>
 	<c:if test="${friends ne null}">
-		<table style="border: 1px solid; float: left; text-align: center;">
+		<table id="frnd_tb" style="border: 1px solid; float: left; text-align: center;">
 			<colgroup>
 				<col width="100">
 			</colgroup>
@@ -129,7 +140,7 @@
 						</c:when>
 						<c:otherwise>
 							<td>${notaccp.user_id}</td>
-							<td><input type="button" onclick="accpFrnd('${notaccp.user_id}')" value="수락"></td>
+							<td><input type="button" onclick="accpFrnd('${notaccp.user_id}', this)" value="수락"></td>
 						</c:otherwise>
 					</c:choose>
 				</tr>

@@ -100,4 +100,28 @@
             SET USE_YN = 'N'
 		  WHERE POST_NO = #{post_no};
      </update>
+     
+     <select id="getPostOne" parameterType="long" resultType="com.nhncorp.facenote.model.PostModel">
+     	 /* post.getPostOne */
+		SELECT
+			POST.*,
+			IMG.save_file_nm
+		FROM
+			(
+				SELECT
+					P.POST_NO,
+					P.USER_ID,
+					U.USER_NM,
+					P.POST_CONT,
+					P.FST_REG_YMDT,
+					P.LST_MOD_YMDT,
+					P.USE_YN
+				FROM
+					POST AS P
+					JOIN [USER] AS U ON P.USER_ID = U.USER_ID
+				WHERE
+					P.POST_NO = #{post_no}
+			) POST
+			LEFT JOIN POST_ATCH_IMG AS IMG ON POST.POST_NO = IMG.POST_NO;
+     </select>
  </mapper>

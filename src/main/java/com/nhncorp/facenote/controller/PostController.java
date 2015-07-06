@@ -1,7 +1,9 @@
 package com.nhncorp.facenote.controller;
 
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -56,8 +58,11 @@ public class PostController {
 		boolean isSuccess = postBO.addPost(postModel, image);
 		
 		if(isSuccess == true) {
+			PostModel post = postBO.getPostOne(postModel.getPost_no());
 			result.put("result", "success");
 			result.put("msg", URLEncoder.encode("포스트가 등록되었습니다", "UTF-8"));
+			Map<String, Object> postMap = postBO.getPostMap(post);
+			result.put("post", URLEncoder.encode(JSONObject.toJSONString(postMap), "UTF-8"));
 			return result.toString();
 		}
 		
@@ -75,9 +80,12 @@ public class PostController {
 		
 		boolean isSuccess = postBO.modifyPost(postModel);
 		
-		if(isSuccess) { 
+		if(isSuccess) {
+			PostModel post = postBO.getPostOne(postModel.getPost_no());
 			result.put("result", "success");
 			result.put("msg", URLEncoder.encode("포스트 수정에 성공했습니다.", "UTF-8"));
+			Map<String, Object> postMap = postBO.getPostMap(post);
+			result.put("post", URLEncoder.encode(JSONObject.toJSONString(postMap), "UTF-8"));
 			return result.toString();
 		}
 		

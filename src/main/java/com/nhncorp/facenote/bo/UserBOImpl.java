@@ -46,7 +46,7 @@ public class UserBOImpl implements UserBO {
 		UserModel userModel = new UserModel();
 		userModel.setUser_id(frndModel.getFrnd_id());
 		
-		if(isExistUser(userModel.getUser_id()) == true) {
+		if(isExistUser(userModel.getUser_id()) == false) {
 			logger.info(userModel.getUser_id() + " not exist");
 			return false;
 		}

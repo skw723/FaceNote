@@ -1,6 +1,5 @@
 package com.nhncorp.facenote.dao;
 
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -35,7 +34,7 @@ public class PostDAOTest {
 	public void testAddPost() {
 		PostModel postModel = new PostModel();
 		postModel.setUser_id("skw723");
-		postModel.setPost_cont("test");
+		postModel.setPost_cont("test1");
 		
 		List<PostModel> before = postDAO.getPostList("skw723");
 		postDAO.addPost(postModel);

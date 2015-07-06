@@ -34,7 +34,7 @@ public class PostBOTest {
 	public void testAddPost() throws Exception {
 		PostModel postModel = new PostModel();
 		postModel.setUser_id("skw723");
-		postModel.setPost_cont("test");
+		postModel.setPost_cont("test1");
 		MultipartFile file = new MockMultipartFile("test.jpg","test".getBytes());
 		
 		assert(postBO.addPost(postModel, file));

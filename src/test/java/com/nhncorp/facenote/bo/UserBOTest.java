@@ -2,7 +2,6 @@ package com.nhncorp.facenote.bo;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -49,7 +48,7 @@ public class UserBOTest {
 	public void testAddFriend() {
 		FriendModel frndModel = new FriendModel();
 		frndModel.setFrnd_id("skw723");
-		frndModel.setUser_id("skw723");
+		frndModel.setUser_id("test1");
 
 		boolean result = userBO.addFriend(frndModel);
 
@@ -96,7 +95,7 @@ public class UserBOTest {
 	public void testAccpFrnd() {
 		FriendModel frndModel = new FriendModel();
 		frndModel.setFrnd_id("skw723");
-		frndModel.setUser_id("skw723");
+		frndModel.setUser_id("test1");
 
 		boolean result = userBO.accpFrnd(frndModel);
 

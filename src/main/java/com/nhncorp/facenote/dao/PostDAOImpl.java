@@ -37,4 +37,9 @@ public class PostDAOImpl implements PostDAO {
 	public int deletePost(long post_no) {
 		return (Integer)session.update("post.deletePost", post_no);
 	}
+
+	@Override
+	public PostModel getPostOne(long post_no) {
+		return (PostModel)session.selectOne("post.getPostOne", post_no);
+	}
 }

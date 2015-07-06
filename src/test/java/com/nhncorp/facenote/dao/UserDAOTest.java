@@ -2,7 +2,6 @@ package com.nhncorp.facenote.dao;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -36,7 +35,7 @@ public class UserDAOTest {
 	@Transactional
 	public void testAddFriend() {
 		FriendModel frndModel = new FriendModel();
-		frndModel.setFrnd_id("test");
+		frndModel.setFrnd_id("test1");
 		frndModel.setUser_id("skw723");
 
 		int result = userDAO.addFriend(frndModel);
@@ -65,7 +64,7 @@ public class UserDAOTest {
 	public void testIsExistFriend() {
 		FriendModel frndModel = new FriendModel();
 		frndModel.setFrnd_id("skw723");
-		frndModel.setUser_id("test");
+		frndModel.setUser_id("test1");
 
 		int result = userDAO.isExistFriend(frndModel);
 
@@ -97,7 +96,7 @@ public class UserDAOTest {
 	public void testAccpFrnd() {
 		FriendModel frndModel = new FriendModel();
 		frndModel.setFrnd_id("skw723");
-		frndModel.setUser_id("skw723");
+		frndModel.setUser_id("test1");
 
 		int result = userDAO.accpFrnd(frndModel);
 

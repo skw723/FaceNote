@@ -11,4 +11,5 @@ public interface PostDAO {
 	public int addAtchFile(AtchFileModel fileModel);
 	public int modifyPost(PostModel postModel);
 	public int deletePost(long post_no);
+	public PostModel getPostOne(long post_no);
 }

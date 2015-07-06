@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -22,7 +21,7 @@
 			reader.readAsDataURL(input.files[0]);
 		}
 	}
-	function clickDelete(post_no) {
+	function clickDelete(post_no, target) {
 		if(sendFlagDelete == true) {
 			return;
 		}
@@ -37,7 +36,7 @@
             	sendFlagDelete = false;
             	alert(decodeURIComponent(data.msg));
             	if(data.result == "success") {
-            		location.reload();    		
+            		target.parentElement.parentElement.remove();		
             	}
             },
             error:function(data) {
@@ -46,29 +45,29 @@
             }
         })
 	}
-	function clickModify(index, post_no) {
-		var status = $("#modifybtn" + index).attr('value');
+	function clickModify(target, post_no) {
+		var status = $("#modifybtn" + post_no).attr('value');
 		if(status === '수정') {
-			$("#cont" + index).attr('readonly',false);
-			$("#modifybtn" + index).attr('value','완료');
+			$("#cont" + post_no).attr('readonly',false);
+			$("#modifybtn" + post_no).attr('value','완료');
 		}
 		
 		if(status === '완료') {			
-			var cont = $("#cont" + index).val();
+			var cont = $("#cont" + post_no).val();
 			if(cont.bytes() > 1000) {
 				alert("1000byte 초과");
 				return false;
 			}
 			
-			$("#cont" + index).attr('readonly',true);
-			$("#modifybtn" + index).attr('value','수정');
+			$("#cont" + post_no).attr('readonly',true);
+			$("#modifybtn" + post_no).attr('value','수정');
 			
 			if(sendFlagModify == true) {
 				return;
 			}
 			sendFlagModify = true;
 			
-			var param = "post_no=" + post_no + "&post_cont=" + $("#cont"+index).val();
+			var param = "post_no=" + post_no + "&post_cont=" + encodeURIComponent($("#cont"+post_no).val());
 			$.ajax({
 	            url:'/modifypost.nhn',
 	            dataType: "JSON",
@@ -77,7 +76,8 @@
 	            	sendFlagModify = false;
 	            	alert(decodeURIComponent(data.msg));
 	            	if(data.result == "success") {
-	            		location.reload();
+	            		target.parentElement.parentElement.remove();
+	            		insertPost_TB(data.post);
 	            	}
 	            },
 	            error:function(data) {
@@ -126,7 +126,7 @@
 				sendFlagAdd = false;
 				alert(decodeURIComponent(data.msg));
             	if(data.result == "success") {
-            		location.reload();    		
+            		insertPost_TB(data.post);
             	}
 			},
 			error: function() {
@@ -135,6 +135,36 @@
 			}
 		});
 	});
+	function insertPost_TB(post) {
+		var postObj = $.parseJSON(decodeURIComponent(post));
+		var table = document.getElementById('post_tb');
+        var newRow = table.insertRow(1);
+        
+        // 첫번째 TD
+        var newCell = newRow.insertCell(0);
+        newCell.innerHTML = postObj.formattedDate;
+ 
+        newCell = newRow.insertCell(1);
+        newCell.innerHTML = postObj.user_nm;
+        
+        newCell = newRow.insertCell(2);
+        newCell.innerHTML = "<textarea rows='12' cols='40' id='cont" + postObj.post_no + "' readonly='readonly' style='resize:none'>" + postObj.post_cont + "</textarea>";
+        
+        newCell = newRow.insertCell(3);
+        if(postObj.save_file_nm != null) {
+        	newCell.innerHTML = "<img src='/image/" + postObj.save_file_nm + "' width='240' height='auto'/>";	
+        }
+        
+        newCell = newRow.insertCell(4);
+        if('${user}' == postObj.user_id) {
+        	newCell.innerHTML = "<input type='button' id='modifybtn" + postObj.post_no + "' value='수정' onClick='clickModify(this, "+ postObj.post_no +")' >";
+        }
+        
+        newCell = newRow.insertCell(5);
+        if('${user}' == postObj.user_id) {
+	        newCell.innerHTML = "<input type='button' value='삭제' onClick='clickDelete(" + postObj.post_no + ", this)' >";        	
+        }
+	}
 </script>
 </head>
 <body>
@@ -144,7 +174,15 @@
 <input type="submit" value="등록"/><br>
 미리보기<br><img id="preview" alt="preview" src="" width="240" height="auto"><br><br>
 </form>
-<table style="border: 1px solid; text-align: center;">
+<table id="post_tb" style="border: 1px solid; text-align: center;">
+	<colgroup>
+		<col width="200">
+		<col width="150">
+		<col width="300">
+		<col width="240">
+		<col width="50">
+		<col width="50">
+	</colgroup>
 	<tr>
 		<th>시간</th>
 		<th>작성자</th>
@@ -153,19 +191,19 @@
 		<th>수정</th>
 		<th>삭제</th>
 	</tr>
-	<c:forEach var="post" items="${posts}" varStatus="status">
+	<c:forEach var="post" items="${posts}">
 	<tr>
 		<td>${post.formattedDate}</td>
 		<td>${post.user_nm}</td>
-		<td><textarea rows="12" cols="40" id="cont${status.index}" readonly="readonly" style="resize:none">${post.post_cont}</textarea></td>
+		<td><textarea rows="12" cols="40" id="cont${post.post_no}" readonly="readonly" style="resize:none">${post.post_cont}</textarea></td>
 		<td>
 			<c:if test="${post.save_file_nm != null && post.save_file_nm != ''}">
 				<img src="/image/${post.save_file_nm}" width="240" height="auto"/>			
 			</c:if>
 		</td>
 		<c:if test="${post.user_id eq user}">
-			<td><input type="button" id="modifybtn${status.index}" value="수정" onClick="clickModify(${status.index}, ${post.post_no})" ></td>
-			<td><input type="button" value="삭제" onClick="clickDelete(${post.post_no})" ></td>
+			<td><input type="button" id="modifybtn${post.post_no}" value="수정" onClick="clickModify(this, ${post.post_no})" ></td>
+			<td><input type="button" value="삭제" onClick="clickDelete(${post.post_no}, this)" ></td>
 		</c:if>
 	</tr>
 	</c:forEach>

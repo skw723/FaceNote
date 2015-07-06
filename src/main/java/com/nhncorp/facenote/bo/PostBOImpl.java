@@ -1,7 +1,9 @@
 package com.nhncorp.facenote.bo;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,5 +91,29 @@ public class PostBOImpl implements PostBO {
 		}
 
 		return true;
+	}
+
+	@Override
+	public PostModel getPostOne(long post_no) {
+		PostModel result = postDAO.getPostOne(post_no);
+		
+		if(result == null) {
+			logger.error("getPostOne return null");
+			return new PostModel();
+		}
+		return result;
+	}
+
+	@Override
+	public Map<String, Object> getPostMap(PostModel post) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		result.put("formattedDate", post.getFormattedDate());
+		result.put("user_nm", post.getUser_nm());
+		result.put("post_cont", post.getPost_cont());
+		result.put("save_file_nm", post.getSave_file_nm());
+		result.put("post_no", post.getPost_no());
+		result.put("user_id", post.getUser_id());
+		
+		return result;
 	}
 }
