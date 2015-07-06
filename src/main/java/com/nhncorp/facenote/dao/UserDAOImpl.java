@@ -31,17 +31,17 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public int isExistUser(UserModel userModel) {
-		return session.selectOne("user.isExistUser", userModel);
+		return (Integer)session.selectOne("user.isExistUser", userModel);
 	}
 
 	@Override
 	public int isExistFriend(FriendModel frndModel) {
-		return session.selectOne("user.isExistFrnd", frndModel);
+		return (Integer)session.selectOne("user.isExistFrnd", frndModel);
 	}
 
 	@Override
 	public int isLogin(UserModel userModel) {
-		return session.selectOne("user.isLogin", userModel);
+		return (Integer)session.selectOne("user.isLogin", userModel);
 	}
 
 	@Override
@@ -51,11 +51,11 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public int accpFrnd(FriendModel frndModel) {
-		return session.update("user.accpFrnd", frndModel);
+		return (Integer)session.update("user.accpFrnd", frndModel);
 	}
 
 	@Override
 	public int isExistFrnd(FriendModel frndModel) {
-		return session.update("user.isExistFrnd", frndModel);
+		return (Integer)session.update("user.isExistFrnd", frndModel);
 	}
 }

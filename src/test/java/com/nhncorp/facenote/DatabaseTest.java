@@ -36,7 +36,7 @@ public class DatabaseTest {
 	public void testConnection() {
 		UserModel userModel = new UserModel();
 		userModel.setUser_id("skw723");
-		int result = session.selectOne("user.isExistUser", userModel);
+		int result = (Integer)session.selectOne("user.isExistUser", userModel);
 		
 		assert(result == 1);
 	}

@@ -21,20 +21,20 @@ public class PostDAOImpl implements PostDAO {
 
 	@Override
 	public int addPost(PostModel postModel) {
-		return session.insert("post.addPost", postModel);
+		return (Integer)session.insert("post.addPost", postModel);
 	}
 
 	@Override
 	public int addAtchFile(AtchFileModel fileModel) {
-		return session.insert("post.addAtchFile", fileModel); 
+		return (Integer)session.insert("post.addAtchFile", fileModel); 
 	}
 
 	@Override
 	public int modifyPost(PostModel postModel) {
-		return session.update("post.modifyPost", postModel);
+		return (Integer)session.update("post.modifyPost", postModel);
 	}
 	@Override
 	public int deletePost(long post_no) {
-		return session.update("post.deletePost", post_no);
+		return (Integer)session.update("post.deletePost", post_no);
 	}
 }
